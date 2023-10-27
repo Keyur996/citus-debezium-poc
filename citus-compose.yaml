@@ -1,0 +1,62 @@
+version: '3.9'
+services:
+  redis:
+    platform: linux/amd64
+    image: 'redis/redis-stack-server:latest'
+    ports:
+      - '6380:6379'
+  master:
+    platform: linux/amd64
+    container_name: '${COMPOSE_PROJECT_NAME:-citus}_master'
+    build:
+      context: .
+      dockerfile: docker/citus.Dockerfile
+    ports: ['${COORDINATOR_EXTERNAL_PORT:-5431}:5432']
+    labels: ['com.citusdata.role=Master']
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment: &AUTH
+      POSTGRES_USER: '${POSTGRES_USER:-postgres}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-123456789}'
+      PGUSER: '${POSTGRES_USER:-postgres}'
+      PGPASSWORD: '${POSTGRES_PASSWORD:-123456}'
+      POSTGRES_HOST_AUTH_METHOD: '${POSTGRES_HOST_AUTH_METHOD:-trust}'
+      DATABASE_NAME: ${POSTGRES_DB:-ipoint}
+  worker:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: docker/citus.Dockerfile
+    labels: ['com.citusdata.role=Worker']
+    depends_on: [master]
+    environment: *AUTH
+    command: '/wait-for-manager.sh'
+    deploy:
+      replicas: 2
+    volumes:
+      - healthcheck-volume:/healthcheck
+  manager:
+    platform: linux/amd64
+    container_name: '${COMPOSE_PROJECT_NAME:-citus}_manager'
+    image: 'citusdata/membership-manager:0.3.0'
+    volumes:
+      - '${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock'
+      - healthcheck-volume:/healthcheck
+    depends_on: [master]
+    environment: *AUTH
+  rabbitmq:
+    platform: linux/amd64
+    container_name: 'rabbitmq'
+    build:
+      context: .
+      dockerfile: docker/rabbitmq.Dockerfile
+    environment:
+      - RABBITMQ_DEFAULT_USER=test
+      - RABBITMQ_DEFAULT_PASS=Test@123
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_DEFAULT_VHOST:-/}
+    ports:
+      - '5671:5672'
+      - '15671:15672'
+volumes:
+  db:
+  healthcheck-volume:

@@ -1,0 +1,1 @@
+curl -s http://localhost:8084/connectors/postgres_worker_1_source/status | json_reformat

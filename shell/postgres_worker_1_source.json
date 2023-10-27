@@ -1,0 +1,21 @@
+{
+  "name": "postgres_worker_1_source",
+  "config": {
+    "database.port": "5432",
+    "database.user": "postgres",
+    "plugin.name": "pgoutput",
+    "slot.name": "test_slot",
+    "topic.prefix": "smackDab",
+    "database.dbname": "debezium_test",
+    "database.password": "123456789",
+    "database.server.name": "table_1",
+    "publication.name": "test_publication",
+    "database.hostname": "postgres_worker_1",
+    "publication.autocreate.include.tables": "public.table_1*",
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false
+  }
+}

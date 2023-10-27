@@ -1,0 +1,21 @@
+{
+  "name": "postgres_source",
+  "config": {
+    "database.port": "5432",
+    "database.user": "postgres",
+    "plugin.name": "pgoutput",
+    "slot.name": "test_slot",
+    "topic.prefix": "smackDab",
+    "database.dbname": "normal_db",
+    "database.password": "postgres",
+    "database.server.name": "table_1",
+    "publication.name": "test_publication",
+    "database.hostname": "postgres",
+    "publication.autocreate.mode": "disabled",
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false
+  }
+}

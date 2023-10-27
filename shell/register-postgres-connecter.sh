@@ -1,0 +1,2 @@
+curl -S -X POST http://localhost:8084/connectors -H "Content-Type: application/json" -d@postgres_worker_1_source.json | json_reformat
+# curl -s http://localhost:8084/connectors/postgres_worker_1_source/status | json_reformat
