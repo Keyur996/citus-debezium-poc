@@ -1,1 +1,0 @@
-echo "INSERT INTO table_1 (tenant_id, data) VALUES (1, 'a');" | docker exec -i postgres_master psql -U postgres -d debezium_test
