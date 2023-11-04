@@ -1,5 +1,3 @@
-# Problem: Currently kafka message stream are received after restarting connector
-
 ### SET UP STEPS
 
 1.Run docker compose file
